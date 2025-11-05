@@ -1,16 +1,8 @@
 name: Test musllinux_x86_64
 
-on:
-  push:
-    branches:
-      - maintenance/**
-  pull_request:
-    branches:
-      - main
-      - maintenance/**
-
+on: push
 permissions:
-   contents: read  # to fetch code (actions/checkout)
+  contents: read   # to fetch code (actions/checkout)
 
 
 concurrency:
