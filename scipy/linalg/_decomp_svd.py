@@ -7,7 +7,7 @@ from . import _batched_linalg
 
 # Local imports.
 from ._misc import LinAlgError, _datacopied
-from .lapack import _normalize_lapack_dtype, HAS_ILP64
+from .lapack import _normalize_lapack_dtype, HAS_ILP64, get_lapack_funcs
 from ._decomp import _asarray_validated
 
 
