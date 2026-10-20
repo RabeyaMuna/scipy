@@ -423,7 +423,23 @@ def test_private_but_present_deprecation(module_name, correct_module):
     # `module_name`, albeit with a deprecation warning.
     for attr_name in module.__all__:
         # ensure attribute is present where the warning is pointing
-        assert getattr(correct_import, attr_name, None) is not None
+        # Some attributes may be defined in a submodule of `correct_import`.
+        # Use a recursive lookup to find the attribute.
+        def _getattr_recursive(obj, name):
+            """Recursively get attribute from module or its submodules."""
+            parts = name.split('.')
+            for part in parts:
+                try:
+                    obj = getattr(obj, part)
+                except AttributeError:
+                    return None
+            return obj
+        
+        # First try direct attribute, then recursive lookup
+        attr = getattr(correct_import, attr_name, None)
+        if attr is None:
+            attr = _getattr_recursive(correct_import, attr_name)
+        assert attr is not None, f"Attribute '{attr_name}' not found in {import_name}"
         message = f"Please import `{attr_name}` from the `{import_name}`..."
         with pytest.deprecated_call(match=message):
             getattr(module, attr_name)

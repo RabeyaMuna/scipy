@@ -1,4 +1,5 @@
 """SVD decomposition functions."""
+
 import numpy as np
 from numpy import zeros, r_, diag, dot, arccos, arcsin, where, clip
 
@@ -11,12 +12,11 @@ from .lapack import _normalize_lapack_dtype, HAS_ILP64
 from ._decomp import _asarray_validated
 
 
-__all__ = ['svd', 'svdvals', 'diagsvd', 'orth', 'subspace_angles', 'null_space']
+__all__ = ["svd", "svdvals", "diagsvd", "orth", "subspace_angles", "null_space"]
 
 
 def _format_errors(err_lst, lapack_driver):
-    """Format/emit errors/warnings from a lowlevel batched routine.
-    """
+    """Format/emit errors/warnings from a lowlevel batched routine."""
     # NB the low-level routine currently stops processing a batch at the first error
     for entry in err_lst:
         info = entry["lapack_info"]
@@ -29,13 +29,19 @@ def _format_errors(err_lst, lapack_driver):
                     msg = f"slice {num} has a NaN entry"
                     raise ValueError(msg)
                 raise ValueError(
-                    f'illegal value in {-info}th argument of internal {lapack_driver}'
-                    f'  for slice {num}.'
+                    f"illegal value in {-info}th argument of internal {lapack_driver}"
+                    f"  for slice {num}."
                 )
 
 
-def svd(a, full_matrices=True, compute_uv=True, overwrite_a=False,
-        check_finite=True, lapack_driver='gesdd'):
+def svd(
+    a,
+    full_matrices=True,
+    compute_uv=True,
+    overwrite_a=False,
+    check_finite=True,
+    lapack_driver="gesdd",
+):
     """
     Singular Value Decomposition.
 
@@ -128,8 +134,8 @@ def svd(a, full_matrices=True, compute_uv=True, overwrite_a=False,
 
     """
     if not isinstance(lapack_driver, str):
-        raise TypeError('lapack_driver must be a string')
-    if lapack_driver not in ('gesdd', 'gesvd'):
+        raise TypeError("lapack_driver must be a string")
+    if lapack_driver not in ("gesdd", "gesvd"):
         message = f'lapack_driver must be "gesdd" or "gesvd", not "{lapack_driver}"'
         raise ValueError(message)
 
@@ -145,7 +151,7 @@ def svd(a, full_matrices=True, compute_uv=True, overwrite_a=False,
     # Also check if dtype is LAPACK compatible
     a1, overwrite_a = _normalize_lapack_dtype(a1, overwrite_a)
 
-    if not (a1.flags['ALIGNED'] or a1.dtype.byteorder == '='):
+    if not (a1.flags["ALIGNED"] or a1.dtype.byteorder == "="):
         overwrite_a = True
         a1 = a1.copy()
 
@@ -171,18 +177,22 @@ def svd(a, full_matrices=True, compute_uv=True, overwrite_a=False,
     if compute_uv:
         max_mn, min_mn = (m, n) if m > n else (n, m)
         if full_matrices:
-            if not HAS_ILP64 and max_mn*max_mn > np.iinfo(np.int32).max:
-                raise ValueError(f"Indexing a matrix size {max_mn} x {max_mn} "
-                                  "would incur integer overflow in LAPACK. "
-                                  "Instead, either use using numpy.linalg.svd or build"
-                                  "SciPy with ILP64 support.")
+            if not HAS_ILP64 and max_mn * max_mn > np.iinfo(np.int32).max:
+                raise ValueError(
+                    f"Indexing a matrix size {max_mn} x {max_mn} "
+                    "would incur integer overflow in LAPACK. "
+                    "Instead, either use using numpy.linalg.svd or build"
+                    "SciPy with ILP64 support."
+                )
         else:
             sz = max(m * min_mn, n * min_mn)
             if not HAS_ILP64 and max(m * min_mn, n * min_mn) > np.iinfo(np.int32).max:
-                raise ValueError(f"Indexing a matrix of {sz} elements would "
-                                  "incur an in integer overflow in LAPACK. "
-                                  "Instead, either use using numpy.linalg.svd or build"
-                                  "SciPy with ILP64 support.")
+                raise ValueError(
+                    f"Indexing a matrix of {sz} elements would "
+                    "incur an in integer overflow in LAPACK. "
+                    "Instead, either use using numpy.linalg.svd or build"
+                    "SciPy with ILP64 support."
+                )
 
     res = _batched_linalg._svd(a1, lapack_driver, compute_uv, full_matrices)
 
@@ -192,9 +202,9 @@ def svd(a, full_matrices=True, compute_uv=True, overwrite_a=False,
         _format_errors(err_lst, lapack_driver)
 
     if compute_uv:
-        return res[:-1]    # u, s, v
+        return res[:-1]  # u, s, v
     else:
-        return res[0]   # s
+        return res[0]  # s
 
 
 def svdvals(a, overwrite_a=False, check_finite=True):
@@ -269,11 +279,10 @@ def svdvals(a, overwrite_a=False, check_finite=True):
     array([ 1.,  1.,  1.,  1.])
 
     """
-    return svd(a, compute_uv=0, overwrite_a=overwrite_a,
-               check_finite=check_finite)
+    return svd(a, compute_uv=0, overwrite_a=overwrite_a, check_finite=check_finite)
 
 
-@_apply_over_batch(('s', 1))
+@_apply_over_batch(("s", 1))
 def diagsvd(s, M, N):
     """
     Construct the sigma matrix in SVD from singular values and size M, N.
@@ -326,7 +335,8 @@ def diagsvd(s, M, N):
 
 # Orthonormal decomposition
 
-@_apply_over_batch(('A', 2))
+
+@_apply_over_batch(("A", 2))
 def orth(A, rcond=None):
     """
     Construct an orthonormal basis for the range of A using SVD
@@ -369,15 +379,16 @@ def orth(A, rcond=None):
     M, N = u.shape[0], vh.shape[1]
     if rcond is None:
         rcond = np.finfo(s.dtype).eps * max(M, N)
-    tol = np.amax(s, initial=0.) * rcond
+    tol = np.amax(s, initial=0.0) * rcond
     num = np.sum(s > tol, dtype=int)
     Q = u[:, :num]
     return Q
 
 
-@_apply_over_batch(('A', 2))
-def null_space(A, rcond=None, *, overwrite_a=False, check_finite=True,
-               lapack_driver='gesdd'):
+@_apply_over_batch(("A", 2))
+def null_space(
+    A, rcond=None, *, overwrite_a=False, check_finite=True, lapack_driver="gesdd"
+):
     """
     Construct an orthonormal basis for the null space of A using SVD
 
@@ -443,18 +454,23 @@ def null_space(A, rcond=None, *, overwrite_a=False, check_finite=True,
            [  6.92087741e-17,   1.00000000e+00]])
 
     """
-    u, s, vh = svd(A, full_matrices=True, overwrite_a=overwrite_a,
-                   check_finite=check_finite, lapack_driver=lapack_driver)
+    u, s, vh = svd(
+        A,
+        full_matrices=True,
+        overwrite_a=overwrite_a,
+        check_finite=check_finite,
+        lapack_driver=lapack_driver,
+    )
     M, N = u.shape[0], vh.shape[1]
     if rcond is None:
         rcond = np.finfo(s.dtype).eps * max(M, N)
-    tol = np.amax(s, initial=0.) * rcond
+    tol = np.amax(s, initial=0.0) * rcond
     num = np.sum(s > tol, dtype=int)
-    Q = vh[num:,:].T.conj()
+    Q = vh[num:, :].T.conj()
     return Q
 
 
-@_apply_over_batch(('A', 2), ('B', 2))
+@_apply_over_batch(("A", 2), ("B", 2))
 def subspace_angles(A, B):
     r"""
     Compute the subspace angles between two matrices.
@@ -524,16 +540,18 @@ def subspace_angles(A, B):
     # 1. Compute orthonormal bases of column-spaces
     A = _asarray_validated(A, check_finite=True)
     if len(A.shape) != 2:
-        raise ValueError(f'expected 2D array, got shape {A.shape}')
+        raise ValueError(f"expected 2D array, got shape {A.shape}")
     QA = orth(A)
     del A
 
     B = _asarray_validated(B, check_finite=True)
     if len(B.shape) != 2:
-        raise ValueError(f'expected 2D array, got shape {B.shape}')
+        raise ValueError(f"expected 2D array, got shape {B.shape}")
     if len(B) != len(QA):
-        raise ValueError('A and B must have the same number of rows, got '
-                         f'{QA.shape[0]} and {B.shape[0]}')
+        raise ValueError(
+            "A and B must have the same number of rows, got "
+            f"{QA.shape[0]} and {B.shape[0]}"
+        )
     QB = orth(B)
     del B
 
@@ -549,14 +567,14 @@ def subspace_angles(A, B):
     del QA, QB, QA_H_QB
 
     # 4. Compute SVD for sine
-    mask = sigma ** 2 >= 0.5
+    mask = sigma**2 >= 0.5
     if mask.any():
-        mu_arcsin = arcsin(clip(svdvals(B, overwrite_a=True), -1., 1.))
+        mu_arcsin = arcsin(clip(svdvals(B, overwrite_a=True), -1.0, 1.0))
     else:
-        mu_arcsin = 0.
+        mu_arcsin = 0.0
 
     # 5. Compute the principal angles
     # with reverse ordering of sigma because smallest sigma belongs to largest
     # angle theta
-    theta = where(mask, mu_arcsin, arccos(clip(sigma[::-1], -1., 1.)))
+    theta = where(mask, mu_arcsin, arccos(clip(sigma[::-1], -1.0, 1.0)))
     return theta

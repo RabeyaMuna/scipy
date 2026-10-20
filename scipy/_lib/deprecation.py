@@ -67,13 +67,13 @@ def _sub_module_deprecation(*, sub_package, module, private_modules, all,
 
     warnings.warn(message, category=DeprecationWarning, stacklevel=3)
 
-    for module in private_modules:
+    for mod in private_modules:
         try:
-            return getattr(import_module(f"scipy.{sub_package}.{module}"), attribute)
+            return getattr(import_module(f"scipy.{sub_package}.{mod}"), attribute)
         except AttributeError as e:
             # still raise an error if the attribute isn't in any of the expected
             # private modules
-            if module == private_modules[-1]:
+            if mod == private_modules[-1]:
                 raise e
             continue
     
