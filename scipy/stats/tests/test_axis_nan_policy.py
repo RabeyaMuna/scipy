@@ -963,11 +963,8 @@ def test_empty(hypotest, args, kwds, n_samples, n_outputs, paired, unpacker):
 
 
 def paired_non_broadcastable_cases():
-    for case in axis_nan_policy_cases:
-        hypotest, args, kwds, n_samples, n_outputs, paired, unpacker = case
-        if n_samples == 1:  # broadcasting only needed with >1 sample
-            continue
-        yield case
+    return [case for case in axis_nan_policy_cases 
+            if case[3] != 1]  # broadcasting only needed with >1 sample
 
 
 @pytest.mark.parametrize("axis", [0, 1])

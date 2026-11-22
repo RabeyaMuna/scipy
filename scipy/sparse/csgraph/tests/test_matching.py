@@ -149,7 +149,7 @@ def test_matching_large_random_graph_with_one_edge_incident_to_each_vertex():
     assert_equal(any(C2.diagonal() == 0), False)
 
 
-@pytest.mark.parametrize('num_rows,num_cols', [(0, 0), (2, 0), (0, 3)])
+@pytest.mark.parametrize('num_rows,num_cols', [(0, 0), (2, 0), (0, 3)], ids=str)
 def test_min_weight_full_matching_trivial_graph(num_rows, num_cols):
     biadjacency = csr_array((num_cols, num_rows))
     biadjacency1 = coo_array((num_cols, num_rows))
@@ -171,7 +171,7 @@ def test_min_weight_full_matching_trivial_graph(num_rows, num_cols):
                             [[1, 0, 0], [2, 0, 0]],
                             [[0, 1, 0], [0, 2, 0]],
                             [[1, 0], [2, 0], [5, 0]]
-                         ])
+                         ], ids=str)
 def test_min_weight_full_matching_infeasible_problems(biadjacency):
     with pytest.raises(ValueError):
         min_weight_full_bipartite_matching(csr_array(biadjacency))
@@ -300,7 +300,7 @@ linear_sum_assignment_test_cases = product(
     ])
 
 
-@pytest.mark.parametrize('sign,test_case', linear_sum_assignment_test_cases)
+@pytest.mark.parametrize('sign,test_case', linear_sum_assignment_test_cases, ids=str)
 def test_min_weight_full_matching_small_inputs(sign, test_case):
     linear_sum_assignment_assertions(
         min_weight_full_bipartite_matching, csr_array, sign, test_case)

@@ -131,19 +131,19 @@ def test_cyclic(n, axis):
         assert _calculate_rmsd(P, g.apply(P)) < TOL
 
 
-@pytest.mark.parametrize("name, size", zip(NAMES, SIZES))
+@pytest.mark.parametrize("name, size", list(zip(NAMES, SIZES)))
 def test_group_sizes(name, size):
     assert len(Rotation.create_group(name)) == size
 
 
-@pytest.mark.parametrize("name, size", zip(NAMES, SIZES))
+@pytest.mark.parametrize("name, size", list(zip(NAMES, SIZES)))
 def test_group_no_duplicates(name, size):
     g = Rotation.create_group(name)
     kdtree = cKDTree(g.as_quat())
     assert len(kdtree.query_pairs(1E-3)) == 0
 
 
-@pytest.mark.parametrize("name, size", zip(NAMES, SIZES))
+@pytest.mark.parametrize("name, size", list(zip(NAMES, SIZES)))
 def test_group_symmetry(name, size):
     g = Rotation.create_group(name)
     q = np.concatenate((-g.as_quat(), g.as_quat()))
@@ -152,7 +152,7 @@ def test_group_symmetry(name, size):
     assert (deltas < TOL).all()
 
 
-@pytest.mark.parametrize("name", NAMES)
+@pytest.mark.parametrize("name", list(NAMES))
 def test_reduction(name):
     """Test that the elements of the rotation group are correctly
     mapped onto the identity rotation."""
@@ -161,7 +161,7 @@ def test_reduction(name):
     assert_array_almost_equal(f.magnitude(), np.zeros(len(g)))
 
 
-@pytest.mark.parametrize("name", NAMES)
+@pytest.mark.parametrize("name", list(NAMES))
 def test_single_reduction(name):
     g = Rotation.create_group(name)
     f = g[-1].reduce(g)

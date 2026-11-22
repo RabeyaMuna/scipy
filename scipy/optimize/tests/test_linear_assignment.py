@@ -76,7 +76,7 @@ def test_linear_sum_assignment_trivial_cost(num_rows, num_cols):
     assert len(col_ind) == 0
 
 
-@pytest.mark.parametrize('sign,test_case', linear_sum_assignment_test_cases)
+@pytest.mark.parametrize('sign,test_case', list(linear_sum_assignment_test_cases))
 def test_linear_sum_assignment_small_inputs(sign, test_case):
     linear_sum_assignment_assertions(
         linear_sum_assignment, np.array, sign, test_case)

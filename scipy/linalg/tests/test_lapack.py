@@ -429,7 +429,7 @@ class TestLeastSquaresSolvers:
                             rtol=25*np.finfo(dtype).eps)
 
 
-@pytest.mark.parametrize('dtype', DTYPES)
+@pytest.mark.parametrize('dtype', list(DTYPES))
 @pytest.mark.parametrize('shape', [(3, 4), (5, 2), (2**18, 2**18)])
 def test_geqrf_lwork(dtype, shape):
     geqrf_lwork = get_lapack_funcs(('geqrf_lwork'), dtype=dtype)
@@ -515,7 +515,7 @@ class TestDlasd4:
 
 class TestTbtrs:
 
-    @pytest.mark.parametrize('dtype', DTYPES)
+    @pytest.mark.parametrize('dtype', list(DTYPES))
     def test_nag_example_f07vef_f07vsf(self, dtype):
         """Test real (f07vef) and complex (f07vsf) examples from NAG
 
@@ -2234,7 +2234,7 @@ def test_geqrfp_lwork(dtype, shape):
 
 
 @pytest.mark.parametrize("ddtype,dtype",
-                         zip(REAL_DTYPES + REAL_DTYPES, DTYPES))
+                         list(zip(REAL_DTYPES + REAL_DTYPES, DTYPES)))
 def test_pttrf_pttrs(ddtype, dtype):
     rng = np.random.RandomState(42)
     # set test tolerance appropriate for dtype
@@ -2391,7 +2391,7 @@ def pteqr_get_d_e_A_z(dtype, realtype, n, compute_z):
 
 
 @pytest.mark.parametrize("dtype,realtype",
-                         zip(DTYPES, REAL_DTYPES + REAL_DTYPES))
+                         list(zip(DTYPES, REAL_DTYPES + REAL_DTYPES)))
 @pytest.mark.parametrize("compute_z", range(3))
 def test_pteqr(dtype, realtype, compute_z):
     '''
@@ -2489,7 +2489,7 @@ def test_pteqr_NAG_f08jgf(compute_z, d, e, d_expect, z_expect):
     assert_allclose(np.abs(_z), np.abs(z_expect), atol=atol)
 
 
-@pytest.mark.parametrize('dtype', DTYPES)
+@pytest.mark.parametrize('dtype', list(DTYPES))
 @pytest.mark.parametrize('matrix_size', [(3, 4), (7, 6), (6, 6)])
 def test_geqrfp(dtype, matrix_size):
     # Tests for all dytpes, tall, wide, and square matrices.
@@ -2591,7 +2591,7 @@ def test_generalized_eigh_lworks(pfx, driver):
         pytest.fail(f"{pfx+driver}_lwork raised unexpected exception: {e}")
 
 
-@pytest.mark.parametrize("dtype_", DTYPES)
+@pytest.mark.parametrize("dtype_", list(DTYPES))
 @pytest.mark.parametrize("m", [1, 10, 100, 1000])
 def test_orcsd_uncsd_lwork(dtype_, m):
     rng = np.random.default_rng(1234)
@@ -2652,7 +2652,7 @@ def test_orcsd_uncsd(dtype_):
     assert_allclose(X, Xc, rtol=0., atol=1e4*np.finfo(dtype_).eps)
 
 
-@pytest.mark.parametrize("dtype", DTYPES)
+@pytest.mark.parametrize("dtype", list(DTYPES))
 @pytest.mark.parametrize("trans_bool", [False, True])
 @pytest.mark.parametrize("fact", ["F", "N"])
 def test_gtsvx(dtype, trans_bool, fact):
@@ -2713,7 +2713,7 @@ def test_gtsvx(dtype, trans_bool, fact):
                                           f" be {b.shape[1]}"))
 
 
-@pytest.mark.parametrize("dtype", DTYPES)
+@pytest.mark.parametrize("dtype", list(DTYPES))
 @pytest.mark.parametrize("trans_bool", [0, 1])
 @pytest.mark.parametrize("fact", ["F", "N"])
 def test_gtsvx_error_singular(dtype, trans_bool, fact):
@@ -2764,7 +2764,7 @@ def test_gtsvx_error_singular(dtype, trans_bool, fact):
         assert info > 0, "info should be > 0 for singular matrix"
 
 
-@pytest.mark.parametrize("dtype", DTYPES*2)
+@pytest.mark.parametrize("dtype", list(DTYPES*2))
 @pytest.mark.parametrize("trans_bool", [False, True])
 @pytest.mark.parametrize("fact", ["F", "N"])
 def test_gtsvx_error_incompatible_size(dtype, trans_bool, fact):
@@ -2846,8 +2846,8 @@ def test_gtsvx_NAG(du, d, dl, b, x):
     assert_array_almost_equal(x, x_soln)
 
 
-@pytest.mark.parametrize("dtype,realtype", zip(DTYPES, REAL_DTYPES
-                                               + REAL_DTYPES))
+@pytest.mark.parametrize("dtype,realtype", list(zip(DTYPES, REAL_DTYPES
+                                               + REAL_DTYPES)))
 @pytest.mark.parametrize("fact,df_de_lambda",
                          [("F",
                            lambda d, e: get_lapack_funcs('pttrf',
@@ -3007,7 +3007,7 @@ def test_ptsvx_NAG(d, e, b, x):
 
 
 @pytest.mark.parametrize('lower', [False, True])
-@pytest.mark.parametrize('dtype', DTYPES)
+@pytest.mark.parametrize('dtype', list(DTYPES))
 def test_pptrs_pptri_pptrf_ppsv_ppcon(dtype, lower):
     rng = np.random.RandomState(1234)
     atol = np.finfo(dtype).eps*100

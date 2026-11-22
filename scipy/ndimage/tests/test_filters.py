@@ -897,9 +897,9 @@ class TestNdimageFilters:
                               (ndimage.percentile_filter, (40,), 1, 3)])
     @pytest.mark.parametrize(
         'axes',
-        tuple(itertools.combinations(range(-3, 3), 1))
-        + tuple(itertools.combinations(range(-3, 3), 2))
-        + ((0, 1, 2),))
+        list(itertools.combinations(range(-3, 3), 1))
+        + list(itertools.combinations(range(-3, 3), 2))
+        + [(0, 1, 2)])
     def test_filter_axes(self, filter_func, extra_args, size0, size, axes, xp):
         # Note: `size` is called `sigma` in `gaussian_filter`
         array = xp.arange(6 * 8 * 12, dtype=xp.float64)
@@ -964,9 +964,9 @@ class TestNdimageFilters:
                       reason="generic_filter does not yet have axes support")
     @pytest.mark.parametrize(
         'axes',
-        tuple(itertools.combinations(range(-3, 3), 1))
-        + tuple(itertools.combinations(range(-3, 3), 2))
-        + ((0, 1, 2),))
+        list(itertools.combinations(range(-3, 3), 1))
+        + list(itertools.combinations(range(-3, 3), 2))
+        + [(0, 1, 2)])
     def test_generic_filter_axes(self, xp, axes):
         array = xp.arange(6 * 8 * 12, dtype=xp.float64)
         array = xp.reshape(array, (6, 8, 12))
@@ -989,7 +989,7 @@ class TestNdimageFilters:
         'dtype', [np.float32, np.float64, np.complex64, np.complex128]
     )
     @pytest.mark.parametrize(
-        'axes', tuple(itertools.combinations(range(-3, 3), 2))
+        'axes', list(itertools.combinations(range(-3, 3), 2))
     )
     @pytest.mark.parametrize('origin', [(0, 0), (-1, 1)])
     def test_correlate_convolve_axes(self, xp, func, dtype, axes, origin):
@@ -1686,7 +1686,7 @@ class TestNdimageFilters:
 
     @xfail_xp_backends("cupy", reason="https://github.com/cupy/cupy/pull/8339")
     @pytest.mark.parametrize(
-        'axes', tuple(itertools.combinations(range(-3, 3), 2))
+        'axes', list(itertools.combinations(range(-3, 3), 2))
     )
     @pytest.mark.parametrize(
         'filter_func, kwargs',

@@ -254,7 +254,7 @@ class TestLogSumExp:
         xp_assert_close(xp.imag(res), xp.imag(ref), atol=0, rtol=1e-15)
 
 
-    @pytest.mark.parametrize('x,y', it.product(
+    @pytest.mark.parametrize('x,y', list(it.product(
         [
             -np.inf,
             np.inf,
@@ -275,7 +275,7 @@ class TestLogSumExp:
             complex(np.inf, 2.3562),
             complex(np.inf, 3.9270),
             complex(np.inf, 5.4978),
-        ], repeat=2)
+        ], repeat=2))
     )
     def test_gh22601_infinite_elements(self, x, y, xp):
         # Test that `logsumexp` does reasonable things in the presence of

@@ -153,8 +153,8 @@ nan_domains = [
 # all the methods should throw errors for nan, bad sized, and bad valued
 # domains.
 @pytest.mark.parametrize("domain, err, msg",
-                         bad_domains + bad_sized_domains +
-                         nan_domains)  # type: ignore[operator]
+                         list(bad_domains + bad_sized_domains +
+                         nan_domains))  # type: ignore[operator]
 @pytest.mark.parametrize("method, kwargs", all_methods)
 def test_bad_domain(domain, err, msg, method, kwargs):
     Method = getattr(stats.sampling, method)
@@ -504,7 +504,7 @@ class TestTransformedDensityRejection:
     mvs = [mv0, mv1, mv2, mv3]
 
     @pytest.mark.parametrize("dist, mv_ex",
-                             zip(dists, mvs))
+                             list(zip(dists, mvs)))
     @pytest.mark.thread_unsafe(reason="deadlocks for unknown reasons")
     def test_basic(self, dist, mv_ex):
         with warnings.catch_warnings():

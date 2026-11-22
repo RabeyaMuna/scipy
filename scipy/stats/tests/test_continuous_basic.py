@@ -819,11 +819,13 @@ def check_fit_args_fix(distfn, arg, rvs, method):
 
 
 def cases_test_methods_with_lists():
+    params = []
     for distname, arg in distcont:
         if distname in slow_with_lists:
-            yield pytest.param(distname, arg, marks=pytest.mark.slow)
+            params.append(pytest.param(distname, arg, marks=pytest.mark.slow))
         else:
-            yield distname, arg
+            params.append((distname, arg))
+    return params
 
 
 @pytest.mark.parametrize('method', ['pdf', 'logpdf', 'cdf', 'logcdf',

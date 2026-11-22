@@ -578,7 +578,7 @@ def test_as_generic_rotvec(xp):
 
 
 @make_xp_test_case(Rotation.as_rotvec)
-@pytest.mark.parametrize("ndim", range(1, 4))
+@pytest.mark.parametrize("ndim", [1, 2, 3])
 def test_as_rotvec_single_nd_input(xp, ndim: int):
     quat = xp.asarray([1, 2, -3, 2])
     quat = xp.reshape(quat, (1,) * (ndim - 1) + (4,))
@@ -915,7 +915,7 @@ def test_from_euler_scalar():
 
 
 @make_xp_test_case(Rotation.from_euler, Rotation.as_euler)
-@pytest.mark.parametrize("seq_tuple", permutations("xyz"))
+@pytest.mark.parametrize("seq_tuple", list(permutations("xyz")))
 @pytest.mark.parametrize("intrinsic", (False, True))
 def test_as_euler_asymmetric_axes(xp, seq_tuple, intrinsic):
     # helper function for mean error tests
@@ -946,7 +946,7 @@ def test_as_euler_asymmetric_axes(xp, seq_tuple, intrinsic):
 
 
 @make_xp_test_case(Rotation.from_euler, Rotation.as_euler)
-@pytest.mark.parametrize("seq_tuple", permutations("xyz"))
+@pytest.mark.parametrize("seq_tuple", list(permutations("xyz")))
 @pytest.mark.parametrize("intrinsic", (False, True))
 def test_as_euler_symmetric_axes(xp, seq_tuple, intrinsic):
     # helper function for mean error tests
@@ -990,7 +990,7 @@ def maybe_warn_gimbal_lock(should_warn, xp):
 
 
 @make_xp_test_case(Rotation.from_euler, Rotation.as_matrix, Rotation.as_euler)
-@pytest.mark.parametrize("seq_tuple", permutations("xyz"))
+@pytest.mark.parametrize("seq_tuple", list(permutations("xyz")))
 @pytest.mark.parametrize("intrinsic", (False, True))
 @pytest.mark.parametrize("suppress_warnings", (False, True))
 def test_as_euler_degenerate_asymmetric_axes(
@@ -1024,7 +1024,7 @@ def test_as_euler_degenerate_asymmetric_axes(
 
 
 @make_xp_test_case(Rotation.from_euler, Rotation.as_matrix, Rotation.as_euler)
-@pytest.mark.parametrize("seq_tuple", permutations("xyz"))
+@pytest.mark.parametrize("seq_tuple", list(permutations("xyz")))
 @pytest.mark.parametrize("intrinsic", (False, True))
 @pytest.mark.parametrize("suppress_warnings", (False, True))
 def test_as_euler_degenerate_symmetric_axes(
@@ -1323,7 +1323,7 @@ def test_mean(xp, ndim: int):
 
 
 @make_xp_test_case(Rotation.from_rotvec, Rotation.mean, Rotation.magnitude)
-@pytest.mark.parametrize("ndim", range(1, 5))
+@pytest.mark.parametrize("ndim", [1, 2, 3, 4])
 def test_mean_axis(xp, ndim: int):
     axes = xp.tile(xp.concat((-xp.eye(3), xp.eye(3))), (3,) * (ndim - 1) + (1, 1))
     theta = xp.pi / 4
@@ -1527,7 +1527,7 @@ def test_apply_single_rotation_multiple_points(xp, ndim: int):
 
 
 @make_xp_test_case(Rotation.from_matrix, Rotation.apply)
-@pytest.mark.parametrize("ndim", range(1, 5))
+@pytest.mark.parametrize("ndim", [1, 2, 3, 4])
 def test_apply_multiple_rotations_single_point(xp, ndim: int):
     dtype = xpx.default_dtype(xp)
     mat = np.empty((2, 3, 3))

@@ -246,7 +246,7 @@ def test_1d_resize(arg: int):
     assert_equal(res.toarray(), den)
 
 
-@pytest.mark.parametrize('arg', zip([1, 2, 3, 4], [1, 2, 3, 4]))
+@pytest.mark.parametrize('arg', list(zip([1, 2, 3, 4], [1, 2, 3, 4])))
 def test_1d_to_2d_resize(arg: tuple[int, int]):
     den = np.array([1, 0, 3])
     res = coo_array(den)
@@ -1229,7 +1229,7 @@ keys = [
     (np.array([1, 3]), np.array([0, 2])),
 ]
 
-@pytest.mark.parametrize(["A", "D", "idx"], [(A, D, idx) for idx in keys])
+@pytest.mark.parametrize(["A", "D", "idx"], list((A, D, idx) for idx in keys))
 @pytest.mark.thread_unsafe
 def test_2d_coo_set(A, D, idx):
     D[idx] = A[idx] = -D[idx]
@@ -1260,7 +1260,7 @@ keys = [
     (np.array([1, 3]), np.array([2, 4]), [2]),
 ]
 
-@pytest.mark.parametrize(["A", "D", "idx"], [(A, D, idx) for idx in keys])
+@pytest.mark.parametrize(["A", "D", "idx"], list((A, D, idx) for idx in keys))
 @pytest.mark.thread_unsafe
 def test_3d_coo_set(A, D, idx):
     D[idx] = A[idx] = -99
@@ -1328,7 +1328,7 @@ keys = [
     ),
     ]
 
-@pytest.mark.parametrize(["A", "D", "ix", "msg"], [(A, D, ix, msg) for msg, ix in keys])
+@pytest.mark.parametrize(["A", "D", "ix", "msg"], list((A, D, ix, msg) for msg, ix in keys))
 @pytest.mark.thread_unsafe
 def test_5d_coo_set(A, D, ix, msg):
     D[ix] = A[ix] = -99

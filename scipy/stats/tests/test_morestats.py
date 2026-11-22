@@ -1748,7 +1748,7 @@ class TestWilcoxon:
         assert_allclose(max_statistic - res.statistic, ref.statistic, rtol=1e-15)
         assert_allclose(res.pvalue, ref.pvalue, rtol=1e-15)
 
-    @pytest.mark.parametrize("method", ('exact', stats.PermutationMethod()))
+    @pytest.mark.parametrize("method", ['exact', stats.PermutationMethod()])
     def test_all_zeros_exact(self, method):
         # previously, this raised a RuntimeWarning when calculating Z, even
         # when the Z value was not needed. Confirm that this no longer
@@ -1823,10 +1823,10 @@ class TestKstat:
         with pytest.raises(ValueError, match=message):
             stats.kstat(data, n=n)
 
-    @pytest.mark.parametrize('case', [(1, 14.02166666666667),
+    @pytest.mark.parametrize('case', ((1, 14.02166666666667),
                                       (2, 12.65006954022974),
                                       (3, -1.447059503280798),
-                                      (4, -141.6682291883626)])
+                                      (4, -141.6682291883626)))
     def test_against_R(self, case, xp):
         # Test against reference values computed with R kStatistics, e.g.
         # options(digits=16)
@@ -3173,12 +3173,12 @@ class TestFDRControl:
         xp_assert_close(res, ref, atol=1e-3)
 
     @pytest.mark.parametrize("case",
-                             [([0.24617028, 0.01140030, 0.05652047, 0.06841983,
+                             (([0.24617028, 0.01140030, 0.05652047, 0.06841983,
                                 0.07989886, 0.01841490, 0.17540784, 0.06841983,
                                 0.06841983, 0.25464082], 'bh'),
                               ([0.72102493, 0.03339112, 0.16554665, 0.20039952,
                                 0.23402122, 0.05393666, 0.51376399, 0.20039952,
-                                0.20039952, 0.74583488], 'by')])
+                                0.20039952, 0.74583488], 'by')))
     def test_against_R(self, case, xp):
         # Test against p.adjust, e.g.
         # p = c(0.22155325, 0.00114003,..., 0.0364813 , 0.25464082)
